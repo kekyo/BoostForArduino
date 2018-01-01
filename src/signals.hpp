@@ -1,0 +1,1 @@
+#include <boost/signals.hpp>
