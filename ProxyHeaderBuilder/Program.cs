@@ -136,34 +136,7 @@ namespace ProxyHeaderBuilder
                         "*.hpp",
                         SearchOption.AllDirectories)
                     .Select(path => path.NormalizePath())
-                    .ToDictionary(path => path, path => new Header(path));
-
-                await Task.WhenAll(
-                    headers.Values
-                    .Select(async header =>
-                    {
-                        var basePath = Path.GetDirectoryName(header.Path);
-
-                        foreach (var (childPath, isSystem) in
-                            await ParseIncludeDirectivesAsync(header.Path))
-                        {
-                            if (isSystem)
-                            {
-                                if (headers.TryGetValue(childPath, out var childHeader))
-                                {
-                                    childHeader.AddParent(header);
-                                }
-                            }
-                            else
-                            {
-                                var relativePath = Path.Combine(basePath, childPath).NormalizePath();
-                                if (headers.TryGetValue(relativePath, out var childHeader))
-                                {
-                                    childHeader.AddParent(header);
-                                }
-                            }
-                        }
-                    }));
+                    .ToArray();
 
                 Console.WriteLine();
 
@@ -171,24 +144,10 @@ namespace ProxyHeaderBuilder
                 
                 Console.Write("Phase 2...");
 
-                var rootHeaders =
-                    Directory.EnumerateFiles(
-                        "boost",
-                        "*.hpp",
-                        SearchOption.TopDirectoryOnly)
-                    .Select(path => path.NormalizePath())
-                    .ToArray();
-
                 await Task.WhenAll(
-                    rootHeaders
+                    headers
+                    .Where(path => !path.Contains("/impl/") && !path.Contains("/detail/"))
                     .Select(path => WriteIncludeAsync(path.Replace('/', '_'), path)));
-
-                await Task.WhenAll(
-                    headers.Values
-                    .Where(header => (rootHeaders.Any(path => header.Path.StartsWith(path)) == false)
-                        && (header.ReferFromParent == false)
-                        && (header.Path.Contains("/impl/") == false))
-                    .Select(header => WriteIncludeAsync(header.Path.Replace('/', '_'), header.Path)));
             }
             catch (Exception ex)
             {
