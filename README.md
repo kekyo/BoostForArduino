@@ -37,12 +37,12 @@ compiler.cpp.flags=-c -g -Os -std=gnu++11 -w -MMD -ffunction-sections -fdata-sec
 ### Ready: Reference from your sketch
 
 * You can reference boost headers from your sketch.
-* You have to trim the "boost" base path for standard boost referrer:
+* You have to rename boost header path separator from "/" to "_".
 
 ```
-// Trim boost base path.
+// Rename path separator.
 //#include <boost/function.hpp>
-#include <function.hpp>
+#include <boost_function.hpp>
 ```
 
 Enjoy!!
