@@ -7,7 +7,7 @@
 * Unchanged from all original files.
 * Prebuild libraries not included. (Yes, lack some codes, ex: boost.asio)
 
-## How to use
+# How to use
 
 ### Installation
 
@@ -47,6 +47,12 @@ compiler.cpp.flags=-c -g -Os -std=gnu++11 -w -MMD -ffunction-sections -fdata-sec
 
 Enjoy!!
 
-## License
+# Examples
+
+Thank you contributing, the [examples](examples/) directory contains example sources.
+If you can share your code, please send PR and welcome!
+
+# License
 
 * Boost license, see [LICENSE](LICENSE_1_0.txt) file.
+* There're owning license each example code, see the source code header.
